@@ -1,3 +1,4 @@
+import BallonGamePage from "@/pages/game";
 import {
   Navigate,
   Route,
@@ -10,7 +11,7 @@ function App() {
     <Router>
       <Routes>
         <Route path={"/"} element={<Navigate to={"/game"} />} />
-        <Route path={"/activity"} element={<></>} />
+        <Route path={"/game"} element={<BallonGamePage />} />
       </Routes>
     </Router>
   );
