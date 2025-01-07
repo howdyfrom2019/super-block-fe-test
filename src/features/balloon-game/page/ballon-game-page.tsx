@@ -1,4 +1,4 @@
-import GameBoard from "@/features/balloon-game/ui/game-board";
+import GameBoard from "@/features/balloon-game/ui/ballon-game-board";
 
 export default function BallonGamePage() {
   return (
