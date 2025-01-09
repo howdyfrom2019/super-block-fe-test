@@ -65,7 +65,7 @@ function BallonGameBoard() {
           className={"text-white"}
           onClick={(e) => {
             e.preventDefault();
-            setStage(0);
+            setStage(1);
             resetGame();
           }}
         >
