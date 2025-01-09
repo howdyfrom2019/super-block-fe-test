@@ -2,7 +2,7 @@ import {
   BALLON_RANDOM_PROBABILITY,
   BALLOON,
 } from "@/features/balloon-game/lib/configs/balloon-game-config";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 interface BalloonGameHookProps {
   N: number;
@@ -53,6 +53,11 @@ export default function useBalloonGame({
       adjecentBallons: [],
     };
   });
+
+  const isCompletedGame = useMemo(() => {
+    const flat = gameStatus.board.flat(2);
+    return flat.filter(Boolean).length === 0;
+  }, [gameStatus.board]);
 
   const findAdjecentBalloons = useCallback(
     ({ startRow, startCol }: { startRow: number; startCol: number }) => {
@@ -186,5 +191,6 @@ export default function useBalloonGame({
     handleCellHover,
     handleCellHoverEnd,
     resetGame,
+    isCompletedGame,
   };
 }
