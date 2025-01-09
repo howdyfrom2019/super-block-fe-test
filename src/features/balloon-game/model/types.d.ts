@@ -1,12 +1,10 @@
-type BalloonBoardCell = typeof BALLOON | "";
-
 interface BalloonPosition {
   row: number;
   col: number;
 }
 
 interface BalloonGameStatus {
-  board: BalloonBoardCell[][];
+  board: ("🎈" | "")[][];
   isGameOver: boolean;
   balloonLeftForStageClear: number;
   adjecentBallons: Position[];

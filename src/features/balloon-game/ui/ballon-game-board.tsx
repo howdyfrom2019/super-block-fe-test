@@ -1,7 +1,11 @@
 import { Button } from "@/components/ui/button";
 import useBalloonGame from "@/features/balloon-game/hooks/use-balloon-game";
+import {
+  BALLON_RANDOM_PROBABILITY,
+  BASIC_BALLOON_BOARD_N,
+} from "@/features/balloon-game/lib/configs/balloon-game-config";
 import { cn } from "@/lib/utils/tailwind-util";
-import { ComponentPropsWithoutRef, PropsWithChildren } from "react";
+import { ComponentPropsWithoutRef, PropsWithChildren, useState } from "react";
 import ConfettiExplosion from "react-confetti-explosion";
 
 interface BalloonGameCellProps extends ComponentPropsWithoutRef<"button"> {}
@@ -26,6 +30,7 @@ function BallonGameCell({
 }
 
 function BallonGameBoard() {
+  const [stage, setStage] = useState(1);
   const {
     gameStatus: { board, adjecentBallons, isGameOver },
     isCompletedGame,
@@ -33,7 +38,11 @@ function BallonGameBoard() {
     handleCellHover,
     handleCellHoverEnd,
     resetGame,
-  } = useBalloonGame({ N: 6 });
+  } = useBalloonGame({
+    N: Math.floor(BASIC_BALLOON_BOARD_N + stage),
+    balloonAppearThresHold:
+      BALLON_RANDOM_PROBABILITY / ((stage - 1) * 0.618 || 1),
+  });
   const isHoveringAdjecentBlock = ({
     row,
     col,
@@ -47,13 +56,29 @@ function BallonGameBoard() {
   };
   return (
     <div className={"flex flex-col gap-2 items-center"}>
+      <div className={"flex items-center gap-2 justify-between w-full"}>
+        <h2 className={"text-xl font-semibold"}>
+          스테이지 {stage.toLocaleString("en-US")}
+        </h2>
+        <Button
+          disabled={stage === 1}
+          className={"text-white"}
+          onClick={(e) => {
+            e.preventDefault();
+            setStage(0);
+            resetGame();
+          }}
+        >
+          스테이지 초기화
+        </Button>
+      </div>
       <div
         className={
           "relative grid grid-1 gap-1 bg-gray-100 rounded-lg overflow-hidden border border-gray-200/50"
         }
       >
         {board.map((rows, i) => (
-          <div className={"flex gap-1"}>
+          <div className={"flex gap-1"} key={i}>
             {rows.map((col, j) => (
               <BallonGameCell
                 disabled={isGameOver}
@@ -139,8 +164,23 @@ function BallonGameBoard() {
                 "flex items-center flex-col w-full gap-2 mt-3 text-white"
               }
             >
-              <Button className={"w-full"}>현재 난이도로 계속하기</Button>
-              <Button className={"w-full"}>난이도 높히기</Button>
+              <Button
+                className={"w-full"}
+                onClick={() => {
+                  resetGame();
+                }}
+              >
+                현재 난이도로 계속하기
+              </Button>
+              <Button
+                className={"w-full"}
+                onClick={() => {
+                  setStage((prev) => prev + 1);
+                  resetGame();
+                }}
+              >
+                난이도 높히기
+              </Button>
             </div>
           </div>
         </>

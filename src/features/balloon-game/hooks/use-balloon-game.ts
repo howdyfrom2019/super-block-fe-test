@@ -2,7 +2,7 @@ import {
   BALLON_RANDOM_PROBABILITY,
   BALLOON,
 } from "@/features/balloon-game/lib/configs/balloon-game-config";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 interface BalloonGameHookProps {
   N: number;
@@ -41,7 +41,7 @@ export default function useBalloonGame({
     );
 
     return { board, count };
-  }, [N]);
+  }, [N, balloonAppearThresHold]);
 
   const [gameStatus, setGameStatus] = useState<BalloonGameStatus>(() => {
     const { board, count } = createBallonGameData();
@@ -184,6 +184,16 @@ export default function useBalloonGame({
       adjecentBallons: [],
     });
   }, [createBallonGameData]);
+
+  useEffect(() => {
+    const { board, count } = createBallonGameData();
+    setGameStatus({
+      board,
+      isGameOver: false,
+      balloonLeftForStageClear: count,
+      adjecentBallons: [],
+    });
+  }, [N, balloonAppearThresHold, createBallonGameData]);
 
   return {
     gameStatus,
