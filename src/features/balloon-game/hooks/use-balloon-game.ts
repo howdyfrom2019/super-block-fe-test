@@ -18,7 +18,6 @@ interface BalloonGameHookProps {
  * ```
  * @param param number N - 칸을 N x N 중 어떻게 설정할지 결정.
  * @param balloonAppearThresHold number 0부터 1사이의 확률값. 각 칸은 확률에 맞춰 풍선이 생성됨.
- *
  */
 export default function useBalloonGame({
   N,
@@ -197,10 +196,12 @@ export default function useBalloonGame({
 
   return {
     gameStatus,
+    isCompletedGame,
+    /** @deprecated findAdjecentBalloons 테스트 용도용 export */
+    findAdjecentBalloons,
     handleBalloonClick,
     handleCellHover,
     handleCellHoverEnd,
     resetGame,
-    isCompletedGame,
   };
 }
