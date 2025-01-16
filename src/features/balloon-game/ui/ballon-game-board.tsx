@@ -32,7 +32,7 @@ function BallonGameCell({
 function BallonGameBoard() {
   const [stage, setStage] = useState(1);
   const {
-    gameStatus: { board, adjecentBallons, isGameOver },
+    gameStatus: { board, adjecentBalloons, isGameOver },
     isCompletedGame,
     handleBalloonClick,
     handleCellHover,
@@ -50,7 +50,7 @@ function BallonGameBoard() {
     row: number;
     col: number;
   }) => {
-    return adjecentBallons.some(
+    return adjecentBalloons?.positions.some(
       (position) => position.row === row && position.col === col
     );
   };

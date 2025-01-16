@@ -7,7 +7,10 @@ interface BalloonGameStatus {
   board: ("🎈" | "")[][];
   isGameOver: boolean;
   balloonLeftForStageClear: number;
-  adjecentBallons: Position[];
+  adjecentBalloons: {
+    isLargest: boolean;
+    positions: BalloonPosition[];
+  } | null;
 }
 
 declare namespace Balloon {

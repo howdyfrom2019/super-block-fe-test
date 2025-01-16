@@ -16,7 +16,7 @@ interface BalloonGameHookProps {
  *   balloonAppearThresHold: 0.6
  * });
  * ```
- * @param param number N - 칸을 N x N 중 어떻게 설정할지 결정.
+ * @param N number - 칸을 N x N 중 어떻게 설정할지 결정.
  * @param balloonAppearThresHold number 0부터 1사이의 확률값. 각 칸은 확률에 맞춰 풍선이 생성됨.
  */
 export default function useBalloonGame({
@@ -49,7 +49,7 @@ export default function useBalloonGame({
       board,
       isGameOver: false,
       balloonLeftForStageClear: count,
-      adjecentBallons: [],
+      adjecentBalloons: null,
     };
   });
 
@@ -120,15 +120,35 @@ export default function useBalloonGame({
     [gameStatus.board]
   );
 
+  const handleCellHover = useCallback(
+    ({ row, col }: { row: number; col: number }) => {
+      if (gameStatus.board[row][col] === BALLOON) {
+        const adjecentBalloons = findAdjecentBalloons({
+          startRow: row,
+          startCol: col,
+        });
+        setGameStatus((prev) => ({
+          ...prev,
+          adjecentBalloons,
+        }));
+      }
+    },
+    [gameStatus.board, findAdjecentBalloons]
+  );
+
+  const handleCellHoverEnd = useCallback(() => {
+    setGameStatus((prev) => ({
+      ...prev,
+      adjecentBalloons: null,
+    }));
+  }, []);
+
   const handleBalloonClick = useCallback(
     ({ row, col }: { row: number; col: number }) => {
       if (gameStatus.isGameOver || gameStatus.board[row][col] !== BALLOON)
         return;
 
-      const { positions, isLargest } = findAdjecentBalloons({
-        startRow: row,
-        startCol: col,
-      });
+      const { positions, isLargest } = gameStatus.adjecentBalloons!;
 
       if (!isLargest) {
         setGameStatus((prev) => ({ ...prev, isGameOver: true }));
@@ -147,32 +167,10 @@ export default function useBalloonGame({
           prev.balloonLeftForStageClear - positions.length,
         adjecentBallons: [],
       }));
+      handleCellHoverEnd();
     },
-    [gameStatus, findAdjecentBalloons]
+    [gameStatus, findAdjecentBalloons, handleCellHoverEnd]
   );
-
-  const handleCellHover = useCallback(
-    ({ row, col }: { row: number; col: number }) => {
-      if (gameStatus.board[row][col] === BALLOON) {
-        const { positions } = findAdjecentBalloons({
-          startRow: row,
-          startCol: col,
-        });
-        setGameStatus((prev) => ({
-          ...prev,
-          adjecentBallons: positions,
-        }));
-      }
-    },
-    [gameStatus.board, findAdjecentBalloons]
-  );
-
-  const handleCellHoverEnd = useCallback(() => {
-    setGameStatus((prev) => ({
-      ...prev,
-      adjecentBallons: [],
-    }));
-  }, []);
 
   const resetGame = useCallback(() => {
     const { board, count } = createBallonGameData();
@@ -180,7 +178,7 @@ export default function useBalloonGame({
       board,
       isGameOver: false,
       balloonLeftForStageClear: count,
-      adjecentBallons: [],
+      adjecentBalloons: null,
     });
   }, [createBallonGameData]);
 
@@ -190,7 +188,7 @@ export default function useBalloonGame({
       board,
       isGameOver: false,
       balloonLeftForStageClear: count,
-      adjecentBallons: [],
+      adjecentBalloons: null,
     });
   }, [N, balloonAppearThresHold, createBallonGameData]);
 
